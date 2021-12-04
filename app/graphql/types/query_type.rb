@@ -23,5 +23,13 @@ module Types
       User.find_by(email: email)
     end
     
+    field :get_folder, Types::FolderType, null: true,
+        description: 'One folder' do
+          argument :id, ID, required: true
+        end
+
+    def get_folder(id:)
+      Folder.find(id)
+    end
   end
 end
