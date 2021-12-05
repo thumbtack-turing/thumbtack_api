@@ -13,5 +13,23 @@ module Types
     def test_field
       'Hello World!'
     end
+
+    field :get_user, Types::UserType, null: true,
+        description: 'One user' do
+          argument :email, String, required: true
+        end
+
+    def get_user(email:)
+      User.find_by(email: email)
+    end
+    
+    field :get_folder, Types::FolderType, null: true,
+        description: 'One folder' do
+          argument :id, ID, required: true
+        end
+
+    def get_folder(id:)
+      Folder.find(id)
+    end
   end
 end
