@@ -52,6 +52,6 @@ ActiveRecord::Schema.define(version: 2021_12_04_210228) do
 
   add_foreign_key "folder_resources", "folders"
   add_foreign_key "folder_resources", "resources"
+  add_foreign_key "folders", "folders", column: "parent_id"
   add_foreign_key "folders", "users"
-  add_foreign_key "folders", "users", column: "parent_id"
 end
