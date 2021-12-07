@@ -1,6 +1,6 @@
 require 'rails_helper'
 RSpec.describe 'create resource', type: :request do
-  describe 'resolve', :vcr do
+  describe 'resolve' do
     before :each do
         @user1 = User.create( name: "Rowan", email: "rowan@test.com")
 
@@ -36,7 +36,7 @@ RSpec.describe 'create resource', type: :request do
     it 'creates a new resource and folderResource' do
       post '/graphql', params: {query: @query}
       result = JSON.parse(response.body)
- 
+
       expect(result['data']['createResource']['name']).to eq("Root")
       expect(result['data']['createResource']['id']).to eq(@base_folder.id.to_s)
       expect(result['data']['createResource']['base']).to eq(true)

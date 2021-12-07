@@ -10,14 +10,10 @@ module Mutations
           new_res = Resource.create(
             name: name,
             url: url,
-            image: img
+            image: img,
+            folder_id: folder_id
           )
-        
-          new_fr = FolderResource.create(
-              folder_id: folder_id, 
-              resource_id: new_res.id
-            ) 
-          
+    
           Folder.find(folder_id)
         end
   
