@@ -1,6 +1,6 @@
 module Mutations
     module Resources
-      class CreateResource < ::Mutations::BaseMutation
+      class CreateResource < GraphQL::Schema::Mutation
         argument :name, String, required: true
         argument :url, String, required: true
         argument :folder_id, ID, required: true
