@@ -7,6 +7,7 @@ module Mutations
 
         def resolve(name:, url:, folder_id:)
           img = get_image(url)
+         
           new_res = Resource.create(
             name: name,
             url: url,
