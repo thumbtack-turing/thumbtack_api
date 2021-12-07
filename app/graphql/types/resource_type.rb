@@ -8,5 +8,5 @@ class Types::ResourceType < Types::BaseObject
     field :folder_id, ID, null: false
     field :created_at, String , null: false
 
-    field :folders, [Types::FolderType], null: true
+    field :folder, Types::FolderType, null: true
 end
