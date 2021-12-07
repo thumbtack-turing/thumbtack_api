@@ -6,4 +6,6 @@ class Types::ResourceType < Types::BaseObject
     field :url, String, null: false
     field :image, String, null: false
     field :created_at, String , null: false
+
+    field :folders, [Types::FolderType], null: true
 end
