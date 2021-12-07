@@ -14,11 +14,9 @@ RSpec.describe 'create resource', type: :request do
       @query = <<~GQL
                 mutation {
                   createResource(
-                    input: {
-                      name: "Some resource"
-                      url: "www.stackoverflow.com"
-                      folderId: #{@base_folder.id}
-                    }
+                    name: "Some resource"
+                    url: "www.stackoverflow.com"
+                    folderId: #{@base_folder.id}
                   ){
                     id
                     name
