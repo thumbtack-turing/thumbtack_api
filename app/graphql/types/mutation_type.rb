@@ -4,6 +4,6 @@ module Types
     field :create_user, Types::UserType, mutation: Mutations::Users::CreateUser
     field :create_folder, mutation: Mutations::Folders::CreateFolder
     field :create_resource, Types::FolderType, mutation: Mutations::Resources::CreateResource
-    
+    field :update_resource, Types::ResourceType, mutation: Mutations::Resources::UpdateResource
   end
 end
