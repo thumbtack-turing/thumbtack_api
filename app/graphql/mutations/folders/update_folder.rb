@@ -1,5 +1,5 @@
 class Mutations::Folders::UpdateFolder < GraphQL::Schema::Mutation
-  argument :id, ID, required: true, required: true
+  argument :id, ID, required: true
   argument :new_parent_id, ID, required: false
   argument :name, String, required: false
 
