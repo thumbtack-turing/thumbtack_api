@@ -8,7 +8,6 @@ class Mutations::Resources::UpdateResource < GraphQL::Schema::Mutation
     resource = Resource.find(attributes[:id])
     resource.update(name: attributes[:name]) if attributes[:name]
     resource.update(folder_id: attributes[:new_folder_id])  if attributes[:new_folder_id]
-    # binding.pry
     resource
   end
 end
