@@ -12,6 +12,10 @@ query {
         name
         email
         id
+        baseFolder{
+              id
+              name
+              base
       }
   }
 
