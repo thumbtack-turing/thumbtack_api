@@ -9,8 +9,7 @@ RSpec.describe 'update resource' do
 
       @sub_folder1 = Folder.create!(name: "sub1", base: false, user_id: @user1.id, parent_id: @base_folder.id)
       @sub_folder2 = Folder.create!(name: "sub2", base: false, parent_id: @base_folder.id, user_id: @user1.id)
-      @resource1 = Resource.create!(name: "resource1", url: "123.com", image: "123.image")
-      @folder_resource = FolderResource.create!(resource_id: @resource1.id, folder_id: @base_folder.id)
+      @resource1 = @base_folder.resources.create!(name: "resource1", url: "123.com", image: "123.image")
 
     end
 
@@ -24,7 +23,7 @@ RSpec.describe 'update resource' do
           ) {
             id
             name
-            folders {
+            folder {
               id
               name
             }
@@ -35,7 +34,7 @@ RSpec.describe 'update resource' do
       result = ThumbtackApiSchema.execute(query).as_json
 
       expect(result["data"]["updateResource"]["name"]).to eq("New name")
-      expect(result["data"]["updateResource"]["folders"].first["id"]).to eq("#{@base_folder.id}")
+      expect(result["data"]["updateResource"]["folder"]["id"]).to eq("#{@base_folder.id}")
     end
 
     it 'can update the folder for a resource' do
@@ -48,7 +47,7 @@ RSpec.describe 'update resource' do
           ) {
             id
             name
-            folders {
+            folder {
               id
               name
             }
@@ -59,7 +58,7 @@ RSpec.describe 'update resource' do
         result = ThumbtackApiSchema.execute(query).as_json
 
         expect(result["data"]["updateResource"]["name"]).to eq("#{@resource1.name}")
-        expect(result["data"]["updateResource"]["folders"].first["id"]).to eq("#{@sub_folder1.id}")
+        expect(result["data"]["updateResource"]["folder"]["id"]).to eq("#{@sub_folder1.id}")
     end
   end
 end

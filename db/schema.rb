@@ -10,19 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_04_210228) do
+ActiveRecord::Schema.define(version: 2021_12_07_220019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "folder_resources", force: :cascade do |t|
-    t.bigint "folder_id", null: false
-    t.bigint "resource_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["folder_id"], name: "index_folder_resources_on_folder_id"
-    t.index ["resource_id"], name: "index_folder_resources_on_resource_id"
-  end
 
   create_table "folders", force: :cascade do |t|
     t.string "name", null: false
@@ -41,6 +32,8 @@ ActiveRecord::Schema.define(version: 2021_12_04_210228) do
     t.string "image"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "folder_id"
+    t.index ["folder_id"], name: "index_resources_on_folder_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -50,8 +43,7 @@ ActiveRecord::Schema.define(version: 2021_12_04_210228) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "folder_resources", "folders"
-  add_foreign_key "folder_resources", "resources"
   add_foreign_key "folders", "folders", column: "parent_id"
   add_foreign_key "folders", "users"
+  add_foreign_key "resources", "folders"
 end
