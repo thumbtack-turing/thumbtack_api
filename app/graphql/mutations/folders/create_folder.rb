@@ -1,7 +1,9 @@
-class Mutations::Folders::CreateFolder < Mutations::BaseMutation
+class Mutations::Folders::CreateFolder < GraphQL::Schema::Mutation
   argument :name, String, required: true
   argument :parent_id, ID, required: true
   argument :user_id, ID, required: true
+
+  type Types::FolderType
 
   field :new_folder, Types::FolderType
   field :parent_folder, Types::FolderType

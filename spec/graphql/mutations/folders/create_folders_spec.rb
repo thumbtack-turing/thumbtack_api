@@ -35,11 +35,10 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
     <<~GQL
     mutation {
       folders: createFolder(
-        input: {
           userId: #{@user.id}
           parentId: #{@folder.id}
           name: "Dalinar"
-        })
+        )
       {
         parentFolder {
           id
