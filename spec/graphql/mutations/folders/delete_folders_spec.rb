@@ -20,14 +20,14 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
       expect(Resource.last).to_not eq(@resource)
     end
 
-    it 'returns data for the deleted folder' do
+    it 'returns data for the parent folder' do
       post '/graphql', params: {query: query}
 
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
 
-      expect(data[:deleteFolder][:id]).to eq(@folder2.id.to_s)
-      expect(data[:deleteFolder][:name]).to eq(@folder2.name)
+      expect(data[:deleteFolder][:id]).to eq(@base.id.to_s)
+      expect(data[:deleteFolder][:name]).to eq(@base.name)
     end
   end
 
