@@ -109,6 +109,32 @@ mutation {
     }
   }
 ```
+### Delete Resource 
+```
+mutation {
+      deleteResource(
+          id: 1
+      ){
+        id
+        name
+        base
+        parentId
+        childResources {
+            id
+            name
+            url
+            image
+            createdAt
+        }
+        childFolders {
+            id
+            name
+            base
+            parentId
+        }
+      }
+}
+```
 
 ### Create User
 ```
@@ -131,11 +157,10 @@ mutation {
 ```
  mutation {
       createFolder(
-        input: {
           userId: 1
           parentId: 1
           name: "Shallan"
-        })
+        )
       {
         parentFolder {
           id
