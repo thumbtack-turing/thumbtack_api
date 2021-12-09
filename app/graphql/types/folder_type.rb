@@ -7,14 +7,20 @@ class Types::FolderType < Types::BaseObject
     field :parent_id, ID, null: true
 
     field :child_folders, [Types::FolderType], null: true
-    
+
     def child_folders
         object.folders
     end
 
     field :child_resources, [Types::ResourceType], null: true
-    
+
     def child_resources
         object.resources
+    end
+
+    field :file_path, String, null: false
+
+    def file_path
+      object.create_file_path("")
     end
 end
