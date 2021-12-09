@@ -21,8 +21,12 @@ module Mutations
         private
 
         def get_image(url)
-            page = MetaInspector.new(url)
-            page.images.best 
+          page = MetaInspector.new(url)
+          img = page.images.best 
+          if img.nil?
+            img = "https://www.oiml.org/en/ressources/icons/link-icon.png/image_preview"
+          end
+          img
         end
   
       end
