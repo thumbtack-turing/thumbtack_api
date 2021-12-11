@@ -52,12 +52,12 @@ query {
 ```
 mutation {
   createResource(
-    name: "I am a resource", 
-    url: "https://stackoverflow.com", 
+    name: "I am a resource",
+    url: "https://stackoverflow.com",
     folderId: 1) {
     id
     name
-    base 
+    base
     parentId
     childResources {
       id
@@ -81,35 +81,55 @@ requires resource id, folderId, and one or both of: newFolderId (new folder dest
 ```
 mutation {
   updateResource (id: 1, folderId: 2, newFolderId: 3, name: "New name") {
-      id
-      name
-      url
-      image
-      folderId
-    
-      folder {
+      updatedResource {
         id
         name
-        base
-        parentId
-        childFolders {
+        url
+        image
+        folderId
+        folder {
+          id
+          name
+          base
+          parentId
+          childFolders {
             id
             name
             base
             parentId
-        }
-        childResources {
+          }
+          childResources {
             id
             name
             url
             image
             createdAt
+          }
+        }
+      }
+      originalParent {
+        id
+        name
+        base
+        parentId
+        childFolders {
+          id
+          name
+          base
+          parentId
+        }
+        childResources {
+          id
+          name
+          url
+          image
+          createdAt
         }
       }
     }
   }
 ```
-### Delete Resource 
+### Delete Resource
 ```
 mutation {
       deleteResource(
@@ -289,4 +309,3 @@ Update parent folder
       }
     }
 ```
-
