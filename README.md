@@ -77,10 +77,10 @@ mutation {
 ```
 
 ### Update Resource
-requires resource id, and one or both of: folderId (new folder destination) or name (new name)
+requires resource id, folderId, and one or both of: newFolderId (new folder destination) or name (new name of resource)
 ```
 mutation {
-  updateResource (id: 1, folderId: 2, name: "New name") {
+  updateResource (id: 1, folderId: 2, newFolderId: 3, name: "New name") {
       id
       name
       url
@@ -149,6 +149,19 @@ mutation {
           id
           name
         }
+      }
+  }
+```
+
+### Delete User
+```
+mutation {
+    deleteUser(
+     id: 2
+    ) {
+        id
+        name
+        email
       }
   }
 ```
@@ -262,6 +275,19 @@ Update parent folder
       }
     }
  ```
+### Delete Folder
 
- 
- 
+```
+ mutation {
+      deleteFolder (
+      id: 8
+    ) {
+        id
+        name
+        base
+        parentId
+        
+      }
+    }
+```
+
