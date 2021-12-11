@@ -286,7 +286,6 @@ Update parent folder
         name
         base
         parentId
-        
       }
     }
 ```
