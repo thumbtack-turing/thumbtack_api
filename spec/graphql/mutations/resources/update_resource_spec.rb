@@ -21,9 +21,14 @@ RSpec.describe 'update resource' do
           folderId: #{@base_folder.id}
           name: "New name",
           ) {
-            id
-            name
-            folder {
+            updatedResource {
+              id
+              name
+              folder {
+                id
+                name
+            }}
+            originalParent {
               id
               name
             }
@@ -33,8 +38,10 @@ RSpec.describe 'update resource' do
 
       result = ThumbtackApiSchema.execute(query).as_json
 
-      expect(result["data"]["updateResource"]["name"]).to eq("New name")
-      expect(result["data"]["updateResource"]["folder"]["id"]).to eq("#{@base_folder.id}")
+      expect(result["data"]["updateResource"]["updatedResource"]["name"]).to eq("New name")
+      expect(result["data"]["updateResource"]["updatedResource"]["folder"]["id"]).to eq("#{@base_folder.id}")
+      expect(result["data"]["updateResource"]["originalParent"]["id"]).to eq(@base_folder.id.to_s)
+      expect(result["data"]["updateResource"]["originalParent"]["name"]).to eq(@base_folder.name)
     end
 
     it 'can update the folder for a resource' do
@@ -45,20 +52,27 @@ RSpec.describe 'update resource' do
           folderId: #{@base_folder.id}
           newFolderId: #{@sub_folder1.id},
           ) {
+            updatedResource {
             id
             name
             folder {
               id
               name
-            }
+          }}
+          originalParent {
+            id
+            name
           }
+        }
         }
         GQL
 
         result = ThumbtackApiSchema.execute(query).as_json
 
-        expect(result["data"]["updateResource"]["name"]).to eq("#{@resource1.name}")
-        expect(result["data"]["updateResource"]["folder"]["id"]).to eq("#{@sub_folder1.id}")
+        expect(result["data"]["updateResource"]["updatedResource"]["name"]).to eq("#{@resource1.name}")
+        expect(result["data"]["updateResource"]["updatedResource"]["folder"]["id"]).to eq("#{@sub_folder1.id}")
+        expect(result["data"]["updateResource"]["originalParent"]["id"]).to eq(@base_folder.id.to_s)
+        expect(result["data"]["updateResource"]["originalParent"]["name"]).to eq(@base_folder.name)
     end
   end
 end
