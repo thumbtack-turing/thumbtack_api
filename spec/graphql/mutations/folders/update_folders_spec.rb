@@ -88,6 +88,26 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
         # binding.pry
         expect(data[:errors]).to eq(["Name or new parent id required."])
       end
+
+      it 'rescues folder not found with error' do
+        post '/graphql', params: {query: query5}
+        json = JSON.parse(response.body, symbolize_names: true)
+        data = json[:data][:folders]
+
+        expect(data).to be(nil)
+        expect(json[:errors].count).to eq(1)
+        expect(json[:errors].first[:message]).to eq("Invalid folder id.")
+      end
+
+      it 'rescues from non-integer id with error' do
+        post '/graphql', params: {query: query6}
+        json = JSON.parse(response.body, symbolize_names: true)
+        data = json[:data][:folders]
+
+        expect(data).to be(nil)
+        expect(json[:errors].count).to eq(1)
+        expect(json[:errors].first[:message]).to eq("Invalid folder id.")
+      end
     end
   end
 
@@ -181,6 +201,62 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
     mutation {
       folders: updateFolder (
         id: #{@folder2.id})
+        {
+        updatedFolder {
+          id
+          name
+          base
+          parentId
+        }
+        originalParent {
+          id
+          name
+          base
+          childFolders {
+            id
+            name
+          }
+        }
+        errors
+      }
+    }
+    GQL
+  end
+
+  def query5
+    <<~GQL
+    mutation {
+      folders: updateFolder (
+        id: 999999999999
+        name: "Husband")
+        {
+        updatedFolder {
+          id
+          name
+          base
+          parentId
+        }
+        originalParent {
+          id
+          name
+          base
+          childFolders {
+            id
+            name
+          }
+        }
+        errors
+      }
+    }
+    GQL
+  end
+
+  def query6
+    <<~GQL
+    mutation {
+      folders: updateFolder (
+        id: "this is not an id"
+        name: "Husband")
         {
         updatedFolder {
           id
