@@ -23,9 +23,8 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
       expect(data[:originalParent][:name]).to eq(@base.name)
       expect(data[:originalParent][:base]).to eq(true)
       expect(data[:originalParent][:childFolders].count).to eq(2)
-
-      expect(data[:errors].empty?).to eq(true)
     end
+
     it 'updates a folder parent' do
       post '/graphql', params: {query: query2}
       json = JSON.parse(response.body, symbolize_names: true)
@@ -44,9 +43,8 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
         expect(child[:id]).to_not eq(@folder2.id.to_s)
         expect(child[:name]).to_not eq("Honor")
       end
-
-      expect(data[:errors].empty?).to eq(true)
     end
+
     it 'updates both name and parent' do
       post '/graphql', params: {query: query3}
       json = JSON.parse(response.body, symbolize_names: true)
@@ -66,27 +64,36 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
         expect(child[:name]).to_not eq("Honor is dead.")
         expect(child[:name]).to_not eq("Honor")
       end
-
-      expect(data[:errors].empty?).to eq(true)
     end
+
     describe 'edge cases' do
       it 'requires name or parent id argument' do
         post '/graphql', params: {query: query4}
         json = JSON.parse(response.body, symbolize_names: true)
         data = json[:data][:folders]
 
-        expect(data[:updatedFolder][:id]).to eq(@folder2.id.to_s)
-        expect(data[:updatedFolder][:name]).to eq("Honor")
-        expect(data[:updatedFolder][:base]).to eq(false)
-        expect(data[:updatedFolder][:parentId]).to eq(@base.id.to_s)
+        expect(data).to be(nil)
+        expect(json[:errors].first[:message]).to eq("Name or new parent id required.")
+      end
 
-        expect(data[:originalParent][:id]).to eq(@base.id.to_s)
-        expect(data[:originalParent][:name]).to eq(@base.name)
-        expect(data[:originalParent][:base]).to eq(true)
-        expect(data[:originalParent][:childFolders].count).to eq(2)
+      it 'rescues folder not found with error' do
+        post '/graphql', params: {query: query5}
+        json = JSON.parse(response.body, symbolize_names: true)
+        data = json[:data][:folders]
 
-        # binding.pry
-        expect(data[:errors]).to eq(["Name or new parent id required."])
+        expect(data).to be(nil)
+        expect(json[:errors].count).to eq(1)
+        expect(json[:errors].first[:message]).to eq("Invalid folder id.")
+      end
+
+      it 'rescues from non-integer id with error' do
+        post '/graphql', params: {query: query6}
+        json = JSON.parse(response.body, symbolize_names: true)
+        data = json[:data][:folders]
+
+        expect(data).to be(nil)
+        expect(json[:errors].count).to eq(1)
+        expect(json[:errors].first[:message]).to eq("Invalid folder id.")
       end
     end
   end
@@ -113,7 +120,6 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
             name
           }
         }
-        errors
       }
     }
     GQL
@@ -141,7 +147,6 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
             name
           }
         }
-        errors
       }
     }
     GQL
@@ -170,7 +175,6 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
             name
           }
         }
-        errors
       }
     }
     GQL
@@ -197,7 +201,60 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
             name
           }
         }
-        errors
+      }
+    }
+    GQL
+  end
+
+  def query5
+    <<~GQL
+    mutation {
+      folders: updateFolder (
+        id: 999999999999
+        name: "Husband")
+        {
+        updatedFolder {
+          id
+          name
+          base
+          parentId
+        }
+        originalParent {
+          id
+          name
+          base
+          childFolders {
+            id
+            name
+          }
+        }
+      }
+    }
+    GQL
+  end
+
+  def query6
+    <<~GQL
+    mutation {
+      folders: updateFolder (
+        id: "this is not an id"
+        name: "Husband")
+        {
+        updatedFolder {
+          id
+          name
+          base
+          parentId
+        }
+        originalParent {
+          id
+          name
+          base
+          childFolders {
+            id
+            name
+          }
+        }
       }
     }
     GQL
