@@ -29,5 +29,7 @@ class Mutations::Folders::UpdateFolder < GraphQL::Schema::Mutation
       original_parent: og_parent,
       errors: errors
     }
+  rescue ActiveRecord::RecordNotFound => _e
+    GraphQL::ExecutionError.new("Invalid folder id.")
   end
 end
