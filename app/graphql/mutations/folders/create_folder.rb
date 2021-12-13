@@ -18,6 +18,9 @@ class Mutations::Folders::CreateFolder < GraphQL::Schema::Mutation
         parent_folder: parent
       }
     else
+      raise GraphQL::ExecutionError, folder.errors.full_messages.join(", ")
     end
+  rescue ActiveRecord::RecordNotFound => _e
+    GraphQL::ExecutionError.new("Invalid user or folder id.")
   end
 end
