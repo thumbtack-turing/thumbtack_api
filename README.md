@@ -260,7 +260,6 @@ Update folder name
             createdAt
           }
         }
-        errors
       }
     }
 ```
