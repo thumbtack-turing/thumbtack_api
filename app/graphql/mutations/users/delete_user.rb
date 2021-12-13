@@ -4,7 +4,11 @@ class Mutations::Users::DeleteUser < GraphQL::Schema::Mutation
   type Types::UserType
 
   def resolve(attributes)
-    user = User.find(attributes[:id])
-    user.destroy
+    user = User.find_by(id: attributes[:id])
+    if user
+      user.destroy
+    else
+      raise GraphQL::ExecutionError, "User does not exist"
+    end
   end
 end
