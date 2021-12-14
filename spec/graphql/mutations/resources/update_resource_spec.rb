@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'update resource' do
+RSpec.describe 'update resource', type: :request do
   describe 'describe resolve' do
     before :each do
       @user1 = User.create( name: "Odell the dog", email: "odie@moretreats.com")
@@ -73,6 +73,65 @@ RSpec.describe 'update resource' do
         expect(result["data"]["updateResource"]["updatedResource"]["folder"]["id"]).to eq("#{@sub_folder1.id}")
         expect(result["data"]["updateResource"]["originalParent"]["id"]).to eq(@base_folder.id.to_s)
         expect(result["data"]["updateResource"]["originalParent"]["name"]).to eq(@base_folder.name)
+    end
+
+    it 'throws an error given bad ids' do
+      query = <<~GQL
+        mutation {
+          updateResource (
+            id: #{@resource1.id + 1},
+            folderId: #{@base_folder.id}
+            newFolderId: #{@sub_folder1.id},
+            ) {
+              updatedResource {
+              id
+              name
+              folder {
+                id
+                name
+            }}
+            originalParent {
+              id
+              name
+            }
+          }
+        }
+        GQL
+
+      post '/graphql', params: {query: query}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1) 
+      expect(result[:errors].first[:message]).to eq("Invalid resource or folder id.") 
+    end
+
+    it 'throws an error given missing arguments' do
+      query = <<~GQL
+        mutation {
+          updateResource (
+            id: #{@resource1.id + 1}
+            newFolderId: #{@sub_folder1.id}
+            ) {
+              updatedResource {
+              id
+              name
+              folder {
+                id
+                name
+            }}
+            originalParent {
+              id
+              name
+            }
+          }
+        }
+        GQL
+
+      post '/graphql', params: {query: query}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1) 
+      expect(result[:errors].first[:message]).to eq( "Field 'updateResource' is missing required arguments: folderId") 
     end
   end
 end
