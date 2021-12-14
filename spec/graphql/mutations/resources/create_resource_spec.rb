@@ -5,7 +5,7 @@ RSpec.describe 'create resource', type: :request do
         @user1 = User.create( name: "Rowan", email: "rowan@test.com")
 
         @base_folder = @user1.folders.create!(name: "Root", base: true)
-  
+
         @sub_folder1 = Folder.create!(name: "sub1", base: false, user_id: @user1.id, parent_id: @base_folder.id)
         @sub_folder2 = Folder.create!(name: "sub2", base: false, parent_id: @base_folder.id, user_id: @user1.id)
         @resource1 = @base_folder.resources.create(name: "resource1", url: "123.com", image: "123.image")
@@ -32,23 +32,31 @@ RSpec.describe 'create resource', type: :request do
       expect(result['data']['createResource']['childResources'][0]['name']).to eq("Example")
       expect(result['data']['createResource']['childResources'][0]['url']).to eq("www.example.com")
       expect(result['data']['createResource']['childResources'][0]['image']).to eq("https://www.oiml.org/en/ressources/icons/link-icon.png/image_preview")
-   
+
     end
 
     it 'throws an error given bad inputs' do
       post '/graphql', params: {query: query3}
       result = JSON.parse(response.body, symbolize_names: true)
 
-      expect(result[:errors].count).to eq(1) 
-      expect(result[:errors].first[:message]).to eq("Field 'createResource' is missing required arguments: url") 
+      expect(result[:errors].count).to eq(1)
+      expect(result[:errors].first[:message]).to eq("Field 'createResource' is missing required arguments: url")
     end
 
     it 'throws an error given bad parent folder id' do
       post '/graphql', params: {query: query4}
       result = JSON.parse(response.body, symbolize_names: true)
 
-      expect(result[:errors].count).to eq(1) 
-      expect(result[:errors].first[:message]).to eq("Folder must exist") 
+      expect(result[:errors].count).to eq(1)
+      expect(result[:errors].first[:message]).to eq("Folder must exist")
+    end
+
+    it 'rescues scraper when given bad url' do
+      post '/graphql', params: {query: query5}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1)
+      expect(result[:errors].first[:message]).to eq("Invalid url.")
     end
   end
 end
@@ -104,7 +112,7 @@ def query3
     mutation {
       createResource(
         name: "Example"
-        
+
         folderId: #{@base_folder.id}
       ){
         id
@@ -133,6 +141,29 @@ def query4
         parentId
         childResources {
             id
+        }
+        }
+      }
+  GQL
+end
+
+def query5
+  <<~GQL
+    mutation {
+      createResource(
+        name: "Some resource"
+        url: "www.this-website-is-bs-or-I-will-eat-my-hat.com"
+        folderId: #{@base_folder.id}
+      ){
+        id
+        name
+        base
+        parentId
+        childResources {
+            id
+            name
+            url
+            image
         }
         }
       }
