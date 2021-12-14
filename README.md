@@ -1,7 +1,41 @@
 # Thumbtack API
 
-![Schema](https://user-images.githubusercontent.com/83834410/145138692-f0944d05-2d60-41c7-af28-76b4b7d5e69a.png)
+[![thumbtack-turing](https://circleci.com/gh/thumbtack-turing/thumbtack_api.svg?style=svg)](https://app.circleci.com/pipelines/github/thumbtack-turing/thumbtack_api)
 
+Thumbtack API allows a user to store internet resources within a folder structure of their own making. A user can add resources to their base folder, or they can create folders within their base folder to store resources by category/topic.
+
+This application is deployed on [Heroku](https://thumbtack-api.herokuapp.com/graphql) and utilizes a single endpoint for all queries and mutations:
+* `post thumbtack-api.herokuapp.com/graphql`
+
+## Local Setup
+
+**Ruby version:**
+* `ruby '2.7.2'`
+* `'rails', '~> 6.1.4', '>= 6.1.4.1'`
+
+**System dependencies:**
+* PostgresQL `'pg', '~> 1.1'`
+* GraphQL `'graphql'`
+* [MetaInspector](https://github.com/metainspector/metainspector) `metainspector`
+* Rack CORS `rack-cors`
+* `group :development`
+  * Graphiql `graphiql-rails`
+* `group :test`
+  * RSpec `rspec-rails`
+  * [Shoulda-Matchers](https://matchers.shoulda.io/docs/v5.0.0/) `shoulda-matchers`
+  * [Simplecov](https://github.com/simplecov-ruby/simplecov) `simplecov`
+
+**Configuration:**
+* `git clone git@github.com:thumbtack-turing/thumbtack_api.git`
+* `bundle install`
+* `rails db:{create,migrate}`
+
+**Testing:**
+* `bundle exec rspec`
+* Manual testing can be done using http://localhost:3000/graqhiql by running `rails s` from the command line
+
+## Database Schema
+![Schema](https://user-images.githubusercontent.com/83834410/145138692-f0944d05-2d60-41c7-af28-76b4b7d5e69a.png)
 
 ## Queries:
 
@@ -46,7 +80,7 @@ query {
     }
 ```
 
-## Mutations
+## Mutations:
 
 ### Create Resource
 ```
