@@ -9,53 +9,10 @@ RSpec.describe 'create resource', type: :request do
         @sub_folder1 = Folder.create!(name: "sub1", base: false, user_id: @user1.id, parent_id: @base_folder.id)
         @sub_folder2 = Folder.create!(name: "sub2", base: false, parent_id: @base_folder.id, user_id: @user1.id)
         @resource1 = @base_folder.resources.create(name: "resource1", url: "123.com", image: "123.image")
-      
-
-      @query1 = <<~GQL
-                mutation {
-                  createResource(
-                    name: "Some resource"
-                    url: "www.stackoverflow.com"
-                    folderId: #{@base_folder.id}
-                  ){
-                    id
-                    name
-                    base
-                    parentId
-                    childResources {
-                        id
-                        name
-                        url
-                        image
-                    }
-                    }
-                  }
-              GQL
-
-        @query2 = <<~GQL
-          mutation {
-            createResource(
-              name: "Example"
-              url: "www.example.com"
-              folderId: #{@base_folder.id}
-            ){
-              id
-              name
-              base
-              parentId
-              childResources {
-                  id
-                  name
-                  url
-                  image
-              }
-              }
-            }
-        GQL
     end
 
     it 'creates a new resource and folderResource' do
-      post '/graphql', params: {query: @query1}
+      post '/graphql', params: {query: query1}
       result = JSON.parse(response.body)
 
       expect(result['data']['createResource']['name']).to eq("Root")
@@ -69,7 +26,7 @@ RSpec.describe 'create resource', type: :request do
     end
 
     it 'uses placeholder image if none found' do
-      post '/graphql', params: {query: @query2}
+      post '/graphql', params: {query: query2}
       result = JSON.parse(response.body)
 
       expect(result['data']['createResource']['childResources'][0]['name']).to eq("Example")
@@ -77,5 +34,107 @@ RSpec.describe 'create resource', type: :request do
       expect(result['data']['createResource']['childResources'][0]['image']).to eq("https://www.oiml.org/en/ressources/icons/link-icon.png/image_preview")
    
     end
+
+    it 'throws an error given bad inputs' do
+      post '/graphql', params: {query: query3}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1) 
+      expect(result[:errors].first[:message]).to eq("Field 'createResource' is missing required arguments: url") 
+    end
+
+    it 'throws an error given bad parent folder id' do
+      post '/graphql', params: {query: query4}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1) 
+      expect(result[:errors].first[:message]).to eq("Folder must exist") 
+    end
   end
+end
+
+def query1
+  <<~GQL
+    mutation {
+      createResource(
+        name: "Some resource"
+        url: "www.stackoverflow.com"
+        folderId: #{@base_folder.id}
+      ){
+        id
+        name
+        base
+        parentId
+        childResources {
+            id
+            name
+            url
+            image
+        }
+        }
+      }
+  GQL
+end
+
+def query2
+  <<~GQL
+    mutation {
+      createResource(
+        name: "Example"
+        url: "www.example.com"
+        folderId: #{@base_folder.id}
+      ){
+        id
+        name
+        base
+        parentId
+        childResources {
+            id
+            name
+            url
+            image
+        }
+        }
+      }
+  GQL
+end
+
+def query3
+  <<~GQL
+    mutation {
+      createResource(
+        name: "Example"
+        
+        folderId: #{@base_folder.id}
+      ){
+        id
+        name
+        base
+        parentId
+        childResources {
+            id
+        }
+        }
+      }
+  GQL
+end
+
+def query4
+  <<~GQL
+    mutation {
+      createResource(
+        name: "Example"
+        url: "example.com"
+        folderId: #{@base_folder.id + 3}
+      ){
+        id
+        name
+        base
+        parentId
+        childResources {
+            id
+        }
+        }
+      }
+  GQL
 end

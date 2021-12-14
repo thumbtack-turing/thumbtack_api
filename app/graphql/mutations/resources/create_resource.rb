@@ -8,16 +8,15 @@ module Mutations
         def resolve(name:, url:, folder_id:)
           img = get_image(url)
          
-          new_res = Resource.create(
-            name: name,
-            url: url,
-            image: img,
-            folder_id: folder_id
-          )
+          new_res = Resource.new(name: name, url: url, image: img, folder_id: folder_id)
     
-          Folder.find(folder_id)
+          if new_res.save
+            Folder.find(folder_id)
+          else
+            raise GraphQL::ExecutionError, new_res.errors.full_messages.join(", ")
+          end
         end
-  
+
         private
 
         def get_image(url)
