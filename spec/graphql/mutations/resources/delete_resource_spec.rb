@@ -8,41 +8,48 @@ RSpec.describe 'delete resource', type: :request do
       
 
       @query = <<~GQL
-                mutation {
-                  deleteResource(
-                      id: #{@resource1.id}
-                  ){
-                    id
-                    name
-                    base
-                    parentId
-                    childResources {
-                        id
-                        name
-                        url
-                        image
-                    }
-                  }
-                }
-              GQL
-      @query2 = <<~GQL
-      mutation {
-        deleteResource(
-            id: 123456
-        ){
-          id
-          name
-          base
-          parentId
-          childResources {
+          mutation {
+            deleteResource(
+                id: #{@resource1.id}
+            ){
               id
               name
-              url
-              image
+              base
+              parentId
+              childResources {
+                  id
+              }
+            }
+          }
+        GQL
+      @query2 = <<~GQL
+        mutation {
+          deleteResource(
+              id: 123456
+          ){
+            id
+            name
+            base
+            parentId
+            childResources {
+                id
+            }
           }
         }
-      }
-    GQL
+      GQL
+      @query3 = <<~GQL
+        mutation {
+          deleteResource{
+            id
+            name
+            base
+            parentId
+            childResources {
+                id
+            }
+          }
+        }
+      GQL
     end
 
     it 'deletes a resource' do
@@ -56,6 +63,22 @@ RSpec.describe 'delete resource', type: :request do
       expect(result['data']['deleteResource']['base']).to eq(true)
 
       expect(result['data']['deleteResource']['childResources']).to eq([])
+    end
+
+    it 'throws an error given bad id' do
+      post '/graphql', params: {query: @query2}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1) 
+      expect(result[:errors].first[:message]).to eq("Invalid resource id.") 
+    end
+
+    it 'throws an error given no id' do
+       post '/graphql', params: {query: @query3}
+      result = JSON.parse(response.body, symbolize_names: true)
+
+      expect(result[:errors].count).to eq(1) 
+      expect(result[:errors].first[:message]).to eq("Field 'deleteResource' is missing required arguments: id") 
     end
 
   end

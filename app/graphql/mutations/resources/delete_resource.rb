@@ -11,6 +11,9 @@ module Mutations
           folder_id = resource.folder.id
           resource.destroy
           Folder.find(folder_id)
+
+        rescue ActiveRecord::RecordNotFound => _e
+          GraphQL::ExecutionError.new("Invalid resource id.")
         end
       end
     end
