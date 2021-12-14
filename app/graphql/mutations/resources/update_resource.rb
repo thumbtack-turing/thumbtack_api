@@ -18,5 +18,7 @@ class Mutations::Resources::UpdateResource < GraphQL::Schema::Mutation
       updated_resource: resource,
       original_parent: parent
     }
+  rescue ActiveRecord::RecordNotFound => _e
+    GraphQL::ExecutionError.new("Invalid resource or folder id.")
   end
 end
