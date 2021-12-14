@@ -72,9 +72,9 @@ RSpec.describe 'create resource', type: :request do
       post '/graphql', params: {query: @query2}
       result = JSON.parse(response.body)
 
-      expect(result['data']['createResource']['childResources'][1]['name']).to eq("Example")
-      expect(result['data']['createResource']['childResources'][1]['url']).to eq("www.example.com")
-      expect(result['data']['createResource']['childResources'][1]['image']).to eq("https://www.oiml.org/en/ressources/icons/link-icon.png/image_preview")
+      expect(result['data']['createResource']['childResources'][0]['name']).to eq("Example")
+      expect(result['data']['createResource']['childResources'][0]['url']).to eq("www.example.com")
+      expect(result['data']['createResource']['childResources'][0]['image']).to eq("https://www.oiml.org/en/ressources/icons/link-icon.png/image_preview")
    
     end
   end
