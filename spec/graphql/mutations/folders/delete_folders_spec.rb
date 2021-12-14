@@ -6,17 +6,20 @@ RSpec.describe Mutations::Folders::CreateFolder, type: :request do
     @base = @user.folders.create(name: 'navani_base', base: true)
     @folder1 = @user.folders.create(name: 'Dalinar', parent_id: @base.id)
     @folder2 = @user.folders.create(name: 'Honor', parent_id: @base.id)
+    @sub_folder1 = @user.folders.create(name: 'Syl', parent_id: @folder2.id)
     @resource = @folder2.resources.create(url: 'example.com', image: 'example.com/image', name: 'Example resource')
   end
 
   describe '.resolve' do
-    it 'deletes a folder and its resources' do
-      expect(Folder.last).to eq(@folder2)
+    it 'deletes a folder and its children' do
+      expect(Folder.all.count).to eq(4)
+      expect(Folder.last).to eq(@sub_folder1)
       expect(Resource.last).to eq(@resource)
 
       post '/graphql', params: {query: query1}
 
-      expect(Folder.last).to_not eq(@folder2)
+      expect(Folder.all.count).to eq(2)
+      expect(Folder.last).to_not eq(@sub_folder1)
       expect(Resource.last).to_not eq(@resource)
     end
 
