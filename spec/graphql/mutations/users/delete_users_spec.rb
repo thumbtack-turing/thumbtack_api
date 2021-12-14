@@ -32,10 +32,56 @@ RSpec.describe Mutations::Users::DeleteUser, type: :request do
     end
   end
 
+  describe 'edge cases' do
+    it 'returns an error if no folder exists with given ID' do
+      post '/graphql', params: {query: query2}
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json).to have_key(:errors)
+      expect(json[:errors]).to be_an(Array)
+      expect(json[:errors].first).to be_a(Hash)
+      expect(json[:errors].first).to have_key(:message)
+    end
+
+    it 'returns an error if no folder ID given' do
+      post '/graphql', params: {query: query3}
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json).to have_key(:errors)
+      expect(json[:errors]).to be_an(Array)
+      expect(json[:errors].first).to be_a(Hash)
+      expect(json[:errors].first).to have_key(:message)
+    end
+  end
+
   def query
     <<~GQL
     mutation {
       deleteUser(id: #{@user2.id})
+      {
+        id
+        name
+      }
+    }
+    GQL
+  end
+
+  def query2
+    <<~GQL
+    mutation {
+      deleteUser(id: 100098)
+      {
+        id
+        name
+      }
+    }
+    GQL
+  end
+
+  def query3
+    <<~GQL
+    mutation {
+      deleteUser
       {
         id
         name
