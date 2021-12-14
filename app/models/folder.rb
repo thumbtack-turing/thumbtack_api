@@ -2,7 +2,7 @@ class Folder < ApplicationRecord
   belongs_to :user
   belongs_to :parent, class_name: 'Folder', optional: true
   has_many :resources, dependent: :destroy
-  has_many :folders, class_name: 'Folder', foreign_key: :parent_id
+  has_many :folders, class_name: 'Folder', foreign_key: :parent_id, dependent: :destroy
 
   def create_file_path(string)
     if parent_id.nil?

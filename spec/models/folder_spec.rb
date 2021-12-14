@@ -5,7 +5,7 @@ RSpec.describe Folder, type: :model do
     it { should belong_to(:user) }
     it { should belong_to(:parent).class_name('Folder').optional }
     it { should have_many(:resources) }
-    it { should have_many(:folders) }
+    it { should have_many(:folders).dependent(:destroy) }
   end
 
   describe 'instance methods' do
