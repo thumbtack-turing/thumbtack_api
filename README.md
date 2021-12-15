@@ -342,3 +342,8 @@ Update parent folder
       }
     }
 ```
+
+## Contributors
+* Rowan DeLong - rowanwinzer@gmail.com - [LinkedIn](https://www.linkedin.com/in/rowandelong/)
+* Erika Kischuk - erika.kischuk@gmail.com - [LinkedIn](https://www.linkedin.com/in/erika-kischuk/)
+* Jamie Pace - jamiejpace@gmail.com - [LinkedIn](https://www.linkedin.com/in/jamiejpace/)
