@@ -13,7 +13,7 @@
 # it.
 require 'simplecov'
 SimpleCov.start 'rails'
-SimpleCov.add_filter ['spec', 'config', 'app/channels', 'app/jobs', 'app/models/application_record.rb']
+SimpleCov.add_filter ['spec', 'config', 'app/channels', 'app/jobs', 'app/models/application_record.rb', 'app/graphql/thumbtack_api_schema.rb']
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
